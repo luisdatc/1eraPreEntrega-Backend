@@ -1,54 +1,21 @@
 import express from "express";
-import ProductManager from "./class/ProductManager.js";
-import Product from "./class/Product.js";
+import productosRouter from "./routes/products.routes.js";
 
-const pManager = new ProductManager();
-
-const PORT = 4005;
+const PORT = 8080;
 
 const app = express();
 
-app.get("/products/:pid", async (req, res) => {
-  console.log(req.params.pid);
+//Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  const allProducts = await pManager.getProducts();
-  const filtroProducts = allProducts.find(
-    (prod) => prod.id === parseInt(req.params.pid)
-  );
+//Rutas
 
-  if (filtroProducts) {
-    res.status(200).send(filtroProducts);
-  } else {
-    res.status(400).send("Producto no existe en Stock");
-  }
-});
+app.use("/api/products", productosRouter);
 
-app.get("/products", async (req, res) => {
-  const { price, stock, limit } = req.query;
 
-  const allProducts = await pManager.getProducts();
-
-  let filtroVariosProductos = allProducts;
-
-  if (price) {
-    filtroVariosProductos = filtroVariosProductos.filter(
-      (prod) => parseFloat(prod.price) === parseFloat(price)
-    );
-  }
-
-  if (stock) {
-    filtroVariosProductos = filtroVariosProductos.filter(
-      (prod) => parseFloat(prod.stock) === parseInt(stock)
-    );
-  }
-
-  if (limit && !isNaN(limit) && parseInt(limit) > 0) {
-    const limiteProductos = filtroVariosProductos.slice(0, parseInt(limit));
-    res.send(limiteProductos);
-  } else {
-    res.send(filtroVariosProductos);
-  }
-});
+/*
+ */
 
 /* pManager.addProduct(productoNuevo1); */
 /*pManager.addProduct(productoNuevo2);*/
