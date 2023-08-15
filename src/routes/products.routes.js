@@ -47,6 +47,16 @@ productosRouter.get("/:id", async (req, res) => {
   }
 });
 
+productosRouter.post("/", async (req, res) => {
+  const producto = await pManager.addProduct(req.body);
+
+  if (producto) {
+    res.status(200).send("Producto agregado");
+  } else {
+    res.status(400).send("El codigo del producto ya existe");
+  }
+});
+
 productosRouter.put("/:id", async (req, res) => {
   const productoId = parseInt(req.params.id);
   const actualizarCampos = req.body;
@@ -77,8 +87,7 @@ productosRouter.delete("/:id", async (req, res) => {
 
 export default productosRouter;
 
-
-  /* {
+/* {
     "title": "Amazing Fantasy #6",
     "description": "It's the end of the origin of Anya Corazon - and a new beginning.  But, first, the question on everyone's mind: what's the public identity of Marvel's newest media darling? Well, we won't tell you here, but we will tell you folks are clamoring for the inside scoop and a glimpse of this amazing spider-like teen, who's now been seen everywhere from Telemundo to Fox News to the NY Daily News - not bad for a Latina from Brooklyn!",
     "price": 8.99,

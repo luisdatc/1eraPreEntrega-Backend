@@ -1,6 +1,81 @@
+import { promises as fs } from "fs";
+
+const carritoPath = "./src/carrito.json";
+
 export default class CarritoManager {
-  constructor(productos, cantidad) {
-    this.productos = [];
-    cantidad = 0;
+  constructor() {
+    this.initCartId();
+  }
+
+  async initCartId() {
+    const carts = await this.getCartsFromFile();
+    if (carts.length === 0) {
+      this.cartCounter = 1;
+    } else {
+      const lastCart = carts[carts.length - 1];
+      this.cartCounter = lastCart.id + 1;
+    }
+  }
+
+  async createCart(products = []) {
+    const cart = {
+      id: this.initCartId,
+      products: products,
+    };
+
+    await this.guardarCarrito(cart);
+    this.cartCounter++;
+    return cart;
+  }
+
+  async getCartById(cartId) {
+    const carts = await this.getCartsFromFile();
+    return carts.find((cart) => parseInt(cart.id) === parseInt(cartId));
+  }
+
+  async addProductToCart(cartId, productId, quantity = 1) {
+    const carts = await this.getCartsFromFile();
+    const cartIndex = carts.findIndex(
+      (cart) => parseInt(cart.id) === parseInt(cartId)
+    );
+
+    if (cartIndex !== -1) {
+      const productExists = carts[cartIndex].products.find(
+        (item) => parseInt(item.id) === parseInt(productId)
+      );
+
+      if (productExists) {
+        productExists.quantity += quantity;
+      } else {
+        carts[cartIndex].products.push({
+          id: productId,
+          quantity: quantity,
+        });
+      }
+
+      await this.guardarCarritos(carts);
+    }
+  }
+
+  async getCartsFromFile() {
+    try {
+      const data = await fs.readFile(carritoPath, "utf-8");
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async guardarCarrito(cart) {
+    const carts = await this.getCartsFromFile();
+    cart.id = this.cartCounter; // Asignar el ID de carrito como número
+    this.cartCounter++;
+    carts.push(cart);
+    await this.guardarCarritos(carts);
+  }
+
+  async guardarCarritos(carts) {
+    const data = JSON.stringify(carts, null, 2);
+    await fs.writeFile(carritoPath, data);
   }
 }

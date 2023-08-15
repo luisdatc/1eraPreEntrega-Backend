@@ -32,6 +32,15 @@ export default class ProductManager {
       return;
     }
 
+    const productCode = product.code;
+    const productData = JSON.parse(await fs.readFile(path, "utf-8"));
+    const codeExiste = productData.some((p) => p.code === productCode);
+
+    if (codeExiste) {
+      console.log("El codigo del producto ya se encuentra agregado");
+      return;
+    }
+
     const data = JSON.parse(await fs.readFile(path, "utf-8"));
 
     const foundProduct = data.find((p) => p.id === product.id);
