@@ -4,10 +4,10 @@ const carritoPath = "./src/carrito.json";
 
 export default class CarritoManager {
   constructor() {
-    this.initCartId();
+    this.initcarritoId();
   }
 
-  async initCartId() {
+  async initcarritoId() {
     const carts = await this.getCartsFromFile();
     if (carts.length === 0) {
       this.cartCounter = 1;
@@ -19,7 +19,7 @@ export default class CarritoManager {
 
   async createCart(products = []) {
     const cart = {
-      id: this.initCartId,
+      id: this.initcarritoId,
       products: products,
     };
 
@@ -28,15 +28,15 @@ export default class CarritoManager {
     return cart;
   }
 
-  async getCartById(cartId) {
+  async getCartById(carritoId) {
     const carts = await this.getCartsFromFile();
-    return carts.find((cart) => parseInt(cart.id) === parseInt(cartId));
+    return carts.find((cart) => parseInt(cart.id) === parseInt(carritoId));
   }
 
-  async addProductToCart(cartId, productId, quantity = 1) {
+  async addProductToCart(carritoId, productId, quantity = 1) {
     const carts = await this.getCartsFromFile();
     const cartIndex = carts.findIndex(
-      (cart) => parseInt(cart.id) === parseInt(cartId)
+      (cart) => parseInt(cart.id) === parseInt(carritoId)
     );
 
     if (cartIndex !== -1) {

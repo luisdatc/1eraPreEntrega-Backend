@@ -17,8 +17,8 @@ cartsRouter.post("/", async (req, res) => {
 
 cartsRouter.get("/:cid", async (req, res) => {
   try {
-    const cartId = req.params.cid;
-    const cart = await carritoManager.getCartById(cartId);
+    const carritoId = req.params.cid;
+    const cart = await carritoManager.getCartById(carritoId);
 
     if (!cart) {
       res.status(404).send("Cart not found");
@@ -33,14 +33,14 @@ cartsRouter.get("/:cid", async (req, res) => {
 
 cartsRouter.post("/:cid/product/:pid", async (req, res) => {
   try {
-    const cartId = req.params.cid;
+    const carritoId = req.params.cid;
     const productId = req.params.pid;
     const { quantity } = req.body;
 
-    await carritoManager.addProductToCart(cartId, productId, quantity);
-    res.status(200).send("Product added to cart");
+    await carritoManager.addProductToCart(carritoId, productId, quantity);
+    res.status(200).send("Producto agregado al carrito");
   } catch (error) {
-    console.error("Error adding product to cart:", error);
+    console.error("Error al agregar el producto al carrito:", error);
     res.status(500).send("Internal Server Error");
   }
 });
